@@ -4,6 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>30-Day Core JavaScript Mastery</title>
+  <script>
+    // Apply any stored theme choice before first paint, so there's no flash
+    // of the wrong theme. Falls back to the OS preference via CSS below.
+    (function () {
+      try {
+        var stored = localStorage.getItem('jscore-theme');
+        if (stored) document.documentElement.setAttribute('data-theme', stored);
+      } catch (e) {}
+    })();
+  </script>
   <style>
     :root {
       --bg: #0d1117;
@@ -14,6 +24,50 @@
       --accent: #58a6ff;
       --accent-dim: #1f6feb;
       --week-badge: #21262d;
+      --focus-text: #f0883e;
+      --focus-border: #5a3a1a;
+      --focus-bg: #2b1d0f;
+    }
+    @media (prefers-color-scheme: light) {
+      :root:not([data-theme="dark"]) {
+        --bg: #ffffff;
+        --panel: #f6f8fa;
+        --border: #d0d7de;
+        --text: #24292f;
+        --muted: #57606a;
+        --accent: #0969da;
+        --accent-dim: #0550ae;
+        --week-badge: #eaeef2;
+        --focus-text: #9a3412;
+        --focus-border: #f3c89a;
+        --focus-bg: #fff1e6;
+      }
+    }
+    :root[data-theme="light"] {
+      --bg: #ffffff;
+      --panel: #f6f8fa;
+      --border: #d0d7de;
+      --text: #24292f;
+      --muted: #57606a;
+      --accent: #0969da;
+      --accent-dim: #0550ae;
+      --week-badge: #eaeef2;
+      --focus-text: #9a3412;
+      --focus-border: #f3c89a;
+      --focus-bg: #fff1e6;
+    }
+    :root[data-theme="dark"] {
+      --bg: #0d1117;
+      --panel: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --accent-dim: #1f6feb;
+      --week-badge: #21262d;
+      --focus-text: #f0883e;
+      --focus-border: #5a3a1a;
+      --focus-bg: #2b1d0f;
     }
     * { box-sizing: border-box; }
     body {
@@ -23,7 +77,26 @@
       color: var(--text);
       line-height: 1.5;
       padding: 2.5rem 1.5rem 4rem;
+      transition: background 0.15s ease, color 0.15s ease;
     }
+    .theme-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1.25rem;
+      width: 2.2rem;
+      height: 2.2rem;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      font-size: 1.05rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+    }
+    .theme-toggle:hover { border-color: var(--accent); }
     header {
       max-width: 980px;
       margin: 0 auto 2.5rem;
@@ -110,9 +183,9 @@
     }
     .focus-tag {
       font-size: 0.65rem;
-      color: #f0883e;
-      border: 1px solid #5a3a1a;
-      background: #2b1d0f;
+      color: var(--focus-text);
+      border: 1px solid var(--focus-border);
+      background: var(--focus-bg);
       border-radius: 4px;
       padding: 0.1rem 0.4rem;
     }
@@ -165,6 +238,8 @@
   </style>
 </head>
 <body>
+
+  <button class="theme-toggle" id="themeToggle" title="Toggle light / dark theme" aria-label="Toggle light / dark theme">🌓</button>
 
   <header>
     <h1>30-Day Core JavaScript Interview &amp; Mentorship Curriculum</h1>
@@ -290,6 +365,20 @@
       section.appendChild(grid);
       main.appendChild(section);
     }
+
+    // Theme toggle: flips between light/dark and remembers the choice.
+    const themeToggle = document.getElementById("themeToggle");
+    function currentTheme() {
+      return (
+        document.documentElement.getAttribute("data-theme") ||
+        (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark")
+      );
+    }
+    themeToggle.addEventListener("click", () => {
+      const next = currentTheme() === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      try { localStorage.setItem("jscore-theme", next); } catch (e) {}
+    });
   </script>
 </body>
 </html>

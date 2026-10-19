@@ -182,26 +182,58 @@ function wrapPage({ title, bodyHtml }) {
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>${escapeHtml(title)}</title>
+<script>
+  // Apply any stored theme choice before first paint to avoid a flash.
+  (function () {
+    try {
+      var stored = localStorage.getItem('jscore-theme');
+      if (stored) document.documentElement.setAttribute('data-theme', stored);
+    } catch (e) {}
+  })();
+</script>
 <style>
-  :root { --bg:#0d1117; --panel:#161b22; --border:#30363d; --text:#c9d1d9; --muted:#8b949e; --accent:#58a6ff; --accent-dim:#1f6feb; }
+  :root {
+    --bg:#0d1117; --panel:#161b22; --border:#30363d; --text:#c9d1d9; --heading:#e6edf3;
+    --muted:#8b949e; --accent:#58a6ff; --accent-dim:#1f6feb; --code-bg:#1f242c; --code-text:#ffa657;
+    --em:#d2a8ff; --row-alt:#11161d; --strong:#f0f6fc;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg:#ffffff; --panel:#f6f8fa; --border:#d0d7de; --text:#24292f; --heading:#1f2328;
+      --muted:#57606a; --accent:#0969da; --accent-dim:#0550ae; --code-bg:#eef1f4; --code-text:#953800;
+      --em:#8250df; --row-alt:#f6f8fa; --strong:#1f2328;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg:#ffffff; --panel:#f6f8fa; --border:#d0d7de; --text:#24292f; --heading:#1f2328;
+    --muted:#57606a; --accent:#0969da; --accent-dim:#0550ae; --code-bg:#eef1f4; --code-text:#953800;
+    --em:#8250df; --row-alt:#f6f8fa; --strong:#1f2328;
+  }
+  :root[data-theme="dark"] {
+    --bg:#0d1117; --panel:#161b22; --border:#30363d; --text:#c9d1d9; --heading:#e6edf3;
+    --muted:#8b949e; --accent:#58a6ff; --accent-dim:#1f6feb; --code-bg:#1f242c; --code-text:#ffa657;
+    --em:#d2a8ff; --row-alt:#11161d; --strong:#f0f6fc;
+  }
   * { box-sizing: border-box; }
-  body { margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif; line-height:1.65; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif; line-height:1.65; transition:background 0.15s ease, color 0.15s ease; }
   .topbar { position:sticky; top:0; background:var(--panel); border-bottom:1px solid var(--border); padding:0.8rem 1.5rem; display:flex; gap:1.25rem; align-items:center; z-index:10; }
   .topbar a { color:var(--accent); text-decoration:none; font-size:0.85rem; font-family:ui-monospace,Consolas,monospace; }
   .topbar a:hover { text-decoration:underline; }
   .topbar .spacer { flex:1; }
+  .theme-toggle { width:1.9rem; height:1.9rem; border-radius:50%; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:0.95rem; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .theme-toggle:hover { border-color:var(--accent); }
   main { max-width:820px; margin:0 auto; padding:2.5rem 1.5rem 5rem; }
-  h1,h2,h3,h4 { color:#e6edf3; line-height:1.3; }
+  h1,h2,h3,h4 { color:var(--heading); line-height:1.3; }
   h1 { font-size:1.7rem; border-bottom:1px solid var(--border); padding-bottom:0.6rem; margin-top:0; }
   h2 { font-size:1.3rem; margin-top:2.2rem; }
   h3 { font-size:1.08rem; color:var(--accent); margin-top:1.6rem; }
   p { color:var(--text); font-size:0.98rem; }
-  strong { color:#f0f6fc; }
-  em { color:#d2a8ff; font-style:italic; }
+  strong { color:var(--strong); }
+  em { color:var(--em); font-style:italic; }
   a { color:var(--accent); }
-  code { font-family:ui-monospace,Consolas,"SF Mono",monospace; background:#1f242c; color:#ffa657; padding:0.1rem 0.35rem; border-radius:4px; font-size:0.87em; }
+  code { font-family:ui-monospace,Consolas,"SF Mono",monospace; background:var(--code-bg); color:var(--code-text); padding:0.1rem 0.35rem; border-radius:4px; font-size:0.87em; }
   pre.code-block { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:1rem 1.1rem; overflow-x:auto; margin:1rem 0; }
-  pre.code-block code { background:none; color:#c9d1d9; padding:0; font-size:0.85rem; line-height:1.55; }
+  pre.code-block code { background:none; color:var(--text); padding:0; font-size:0.85rem; line-height:1.55; }
   ul, ol { padding-left:1.4rem; color:var(--text); font-size:0.97rem; }
   li { margin:0.3rem 0; }
   li ul, li ol { margin-top:0.3rem; }
@@ -211,8 +243,8 @@ function wrapPage({ title, bodyHtml }) {
   .table-wrap { overflow-x:auto; margin:1.2rem 0; }
   table { border-collapse:collapse; width:100%; font-size:0.9rem; }
   th, td { border:1px solid var(--border); padding:0.5rem 0.75rem; text-align:left; vertical-align:top; }
-  th { background:var(--panel); color:#e6edf3; }
-  tr:nth-child(even) td { background:#11161d; }
+  th { background:var(--panel); color:var(--heading); }
+  tr:nth-child(even) td { background:var(--row-alt); }
 </style>
 </head>
 <body>
@@ -220,10 +252,23 @@ function wrapPage({ title, bodyHtml }) {
     <a href="../index.html">&larr; All Days</a>
     <span class="spacer"></span>
     <a href="index.html">&#9654; Open Sandbox</a>
+    <button class="theme-toggle" id="themeToggle" title="Toggle light / dark theme" aria-label="Toggle light / dark theme">&#127769;</button>
   </div>
   <main>
 ${bodyHtml}
   </main>
+  <script>
+    var themeToggle = document.getElementById('themeToggle');
+    function currentTheme() {
+      return document.documentElement.getAttribute('data-theme') ||
+        (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    }
+    themeToggle.addEventListener('click', function () {
+      var next = currentTheme() === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('jscore-theme', next); } catch (e) {}
+    });
+  </script>
 </body>
 </html>
 `;

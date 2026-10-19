@@ -2,17 +2,47 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Day 27 — WeakMap, WeakSet & Memory-Safe Caching</title>
+  <title>Day 27 — WeakMap, WeakSet &amp; Memory-Safe Caching</title>
+  <script>
+    // Apply any stored theme choice before first paint to avoid a flash.
+    (function () {
+      try {
+        var stored = localStorage.getItem('jscore-theme');
+        if (stored) document.documentElement.setAttribute('data-theme', stored);
+      } catch (e) {}
+    })();
+  </script>
   <style>
-    body { font-family: ui-monospace, Consolas, monospace; background: #0d1117; color: #c9d1d9; padding: 2rem; line-height: 1.5; }
-    h1 { color: #58a6ff; font-size: 1.1rem; }
-    p.hint { color: #8b949e; }
-    #output { background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 1rem; white-space: pre-wrap; margin-top: 1rem; min-height: 2rem; }
-    .log-line { border-bottom: 1px dashed #21262d; padding: 2px 0; }
+    :root {
+      --bg:#0d1117; --panel:#161b22; --border:#30363d; --text:#c9d1d9; --muted:#8b949e; --accent:#58a6ff;
+    }
+    @media (prefers-color-scheme: light) {
+      :root:not([data-theme="dark"]) {
+        --bg:#ffffff; --panel:#f6f8fa; --border:#d0d7de; --text:#24292f; --muted:#57606a; --accent:#0969da;
+      }
+    }
+    :root[data-theme="light"] {
+      --bg:#ffffff; --panel:#f6f8fa; --border:#d0d7de; --text:#24292f; --muted:#57606a; --accent:#0969da;
+    }
+    :root[data-theme="dark"] {
+      --bg:#0d1117; --panel:#161b22; --border:#30363d; --text:#c9d1d9; --muted:#8b949e; --accent:#58a6ff;
+    }
+    body { font-family: ui-monospace, Consolas, monospace; background: var(--bg); color: var(--text); padding: 2rem; line-height: 1.5; transition: background 0.15s ease, color 0.15s ease; }
+    h1 { color: var(--accent); font-size: 1.1rem; padding-right: 2.5rem; }
+    p.hint { color: var(--muted); }
+    #output { background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 1rem; white-space: pre-wrap; margin-top: 1rem; min-height: 2rem; }
+    .log-line { border-bottom: 1px dashed var(--border); padding: 2px 0; }
+    .theme-toggle {
+      position: fixed; top: 1rem; right: 1.25rem; width: 2.1rem; height: 2.1rem; border-radius: 50%;
+      border: 1px solid var(--border); background: var(--panel); color: var(--text); font-size: 1rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .theme-toggle:hover { border-color: var(--accent); }
   </style>
 </head>
 <body>
-  <h1>Day 27 — WeakMap, WeakSet & Memory-Safe Caching</h1>
+  <button class="theme-toggle" id="themeToggle" title="Toggle light / dark theme" aria-label="Toggle light / dark theme">&#127769;</button>
+  <h1>Day 27 — WeakMap, WeakSet &amp; Memory-Safe Caching</h1>
   <p class="hint">Open DevTools Console (F12) to see full output, or read it rendered below.</p>
   <div id="output"></div>
 
@@ -27,6 +57,18 @@
       line.textContent = args.map(a => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ');
       outputEl.appendChild(line);
     };
+
+    // Theme toggle: flips between light/dark and remembers the choice.
+    const themeToggle = document.getElementById('themeToggle');
+    function currentTheme() {
+      return document.documentElement.getAttribute('data-theme') ||
+        (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    }
+    themeToggle.addEventListener('click', () => {
+      const next = currentTheme() === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('jscore-theme', next); } catch (e) {}
+    });
   </script>
   <script src="script.js"></script>
 </body>
