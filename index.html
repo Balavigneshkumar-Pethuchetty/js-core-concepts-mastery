@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>30-Day Core JavaScript Mastery</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --panel: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --accent-dim: #1f6feb;
+      --week-badge: #21262d;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-monospace, "Cascadia Code", Consolas, "SF Mono", monospace;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+    header {
+      max-width: 980px;
+      margin: 0 auto 2.5rem;
+      text-align: center;
+    }
+    header h1 {
+      color: var(--accent);
+      font-size: 1.8rem;
+      margin: 0 0 0.5rem;
+    }
+    header p {
+      color: var(--muted);
+      max-width: 640px;
+      margin: 0 auto;
+      font-size: 0.95rem;
+    }
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1.25rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      flex-wrap: wrap;
+    }
+    .legend span { display: inline-flex; align-items: center; gap: 0.4rem; }
+
+    main { max-width: 980px; margin: 0 auto; }
+
+    .week {
+      margin-bottom: 2.25rem;
+    }
+    .week-header {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      margin-bottom: 0.9rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .week-badge {
+      background: var(--week-badge);
+      color: var(--accent);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.15rem 0.7rem;
+      font-size: 0.75rem;
+      white-space: nowrap;
+    }
+    .week-title { color: var(--text); font-size: 1rem; font-weight: 600; }
+    .week-sub { color: var(--muted); font-size: 0.8rem; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 0.9rem;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      transition: border-color 0.15s ease, transform 0.15s ease;
+    }
+    .card:hover {
+      border-color: var(--accent-dim);
+      transform: translateY(-1px);
+    }
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .day-num {
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+    .focus-tag {
+      font-size: 0.65rem;
+      color: #f0883e;
+      border: 1px solid #5a3a1a;
+      background: #2b1d0f;
+      border-radius: 4px;
+      padding: 0.1rem 0.4rem;
+    }
+    .card h3 {
+      margin: 0;
+      font-size: 0.95rem;
+      color: var(--text);
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+      flex-grow: 1;
+    }
+    .card-links {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.3rem;
+    }
+    .card-links a {
+      flex: 1;
+      text-align: center;
+      text-decoration: none;
+      font-size: 0.78rem;
+      padding: 0.4rem 0.5rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .card-links a.readme:hover { border-color: var(--accent); color: var(--accent); }
+    .card-links a.sandbox {
+      background: var(--accent-dim);
+      border-color: var(--accent-dim);
+      color: #fff;
+    }
+    .card-links a.sandbox:hover { background: var(--accent); border-color: var(--accent); }
+
+    footer {
+      max-width: 980px;
+      margin: 3rem auto 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1.25rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>30-Day Core JavaScript Interview &amp; Mentorship Curriculum</h1>
+    <p>Pick a day below. "Guide" opens the README (concept, interview talking points, mentorship script, exercise). "Sandbox" runs that day's script.js live in the browser.</p>
+    <div class="legend">
+      <span>🟠 <span class="focus-tag" style="padding:0.1rem 0.4rem;">FOCUS</span> = heavy async-ordering emphasis (Days 15–22)</span>
+    </div>
+  </header>
+
+  <main id="main"></main>
+
+  <footer>
+    30 days · 90 files · every script.js verified to actually run.
+    See <a href="README.md">README.md</a> for the full written index.
+  </footer>
+
+  <script>
+    const WEEKS = [
+      {
+        badge: "Week 1",
+        title: "Execution Model & Scope",
+        sub: "Days 01–05",
+        days: [
+          { n: 1, slug: "day-01-execution-context-call-stack", title: "Execution Context & Call Stack", desc: "How V8 creates and pushes/pops execution contexts; stack frames; stack overflow." },
+          { n: 2, slug: "day-02-hoisting-var-let-const-tdz", title: "Hoisting, var/let/const & the TDZ", desc: "Two-phase creation/execution, var vs let/const hoisting, the Temporal Dead Zone." },
+          { n: 3, slug: "day-03-scope-lexical-environment", title: "Scope & the Lexical Environment", desc: "Lexical environment records, the scope chain, lexical vs dynamic scoping." },
+          { n: 4, slug: "day-04-closures", title: "Closures", desc: "How closures keep variables alive; loop-capture bugs; memoization & private state." },
+          { n: 5, slug: "day-05-this-keyword-binding", title: "The `this` Keyword & Binding Rules", desc: "Default/implicit/explicit/new binding precedence, arrow lexical this, the 'losing this' bug." },
+        ],
+      },
+      {
+        badge: "Week 2",
+        title: "Functions, Objects & Types",
+        sub: "Days 06–10",
+        days: [
+          { n: 6, slug: "day-06-functions-arrow-vs-regular", title: "Functions: Declarations, Expressions & Arrows", desc: "Hoisting differences, this/arguments/new, choosing the right function form." },
+          { n: 7, slug: "day-07-prototypes-prototypal-inheritance", title: "Prototypes & Prototypal Inheritance", desc: "The prototype chain, __proto__ vs .prototype, Object.create, deep-chain performance." },
+          { n: 8, slug: "day-08-classes-under-the-hood", title: "Classes Under the Hood", desc: "Classes as sugar over prototypes: extends, super, static members, private #fields." },
+          { n: 9, slug: "day-09-object-property-descriptors", title: "Object Property Descriptors", desc: "defineProperty, getters/setters, freeze vs seal vs preventExtensions." },
+          { n: 10, slug: "day-10-equality-type-coercion", title: "Equality & Type Coercion", desc: "== vs === vs Object.is, ToPrimitive, classic coercion gotchas." },
+        ],
+      },
+      {
+        badge: "Week 3",
+        title: "Memory, Numbers & Protocols",
+        sub: "Days 11–15",
+        days: [
+          { n: 11, slug: "day-11-primitives-vs-references-memory", title: "Primitives vs References & Memory", desc: "Stack vs heap, pass-by-value vs reference-copy, shallow vs deep copying." },
+          { n: 12, slug: "day-12-garbage-collection", title: "Garbage Collection", desc: "Mark-and-sweep, V8's generational GC, real production memory-leak patterns." },
+          { n: 13, slug: "day-13-numbers-precision-bigint", title: "Numbers, Floating-Point Precision & BigInt", desc: "IEEE-754, why 0.1+0.2!==0.3, MAX_SAFE_INTEGER, when to reach for BigInt." },
+          { n: 14, slug: "day-14-symbols-iterators-iterables", title: "Symbols, Iterators & Iterables", desc: "The Symbol type, well-known symbols, the iterator/iterable protocol." },
+          { n: 15, slug: "day-15-event-loop-foundations", title: "The Event Loop — Foundations", desc: "Call stack, heap, and task queues: the foundational model before the deep dives.", focus: true },
+        ],
+      },
+      {
+        badge: "Week 4",
+        title: "The Event Loop & Async Mastery",
+        sub: "Days 16–22 — the heart of the course",
+        days: [
+          { n: 16, slug: "day-16-macrotasks-vs-microtasks", title: "Macrotasks vs Microtasks", desc: "Why the microtask queue fully drains before the next macrotask — with a trace puzzle.", focus: true },
+          { n: 17, slug: "day-17-promises-deep-dive", title: "Promises Deep Dive", desc: "States, chaining, all/race/allSettled/any, error propagation, anti-patterns.", focus: true },
+          { n: 18, slug: "day-18-async-await-internals", title: "Async/Await Internals", desc: "How async/await desugars; why await yields a microtask tick; sequential-await pitfalls.", focus: true },
+          { n: 19, slug: "day-19-generators-iterators-coroutines", title: "Generators, Iterators & Coroutines", desc: "function*, yield, lazy evaluation, custom iterables, the root of async/await.", focus: true },
+          { n: 20, slug: "day-20-runtime-apis-browser-vs-node", title: "Runtime APIs: Browser vs Node", desc: "Browser Web APIs vs libuv's phases; why 'the event loop' is runtime-specific.", focus: true },
+          { n: 21, slug: "day-21-microtask-macrotask-scheduling-apis", title: "Scheduling APIs", desc: "queueMicrotask, requestAnimationFrame, process.nextTick, setImmediate — exact ordering.", focus: true },
+          { n: 22, slug: "day-22-async-ordering-mastery", title: "Async Ordering Mastery (Capstone)", desc: "The hardest predict-the-output puzzles in the course, fully reasoned through.", focus: true },
+        ],
+      },
+      {
+        badge: "Week 5",
+        title: "Patterns, Performance & the Capstone",
+        sub: "Days 23–30",
+        days: [
+          { n: 23, slug: "day-23-error-handling", title: "Error Handling", desc: "try/catch/finally, custom Error subclasses, async error channels, global handlers." },
+          { n: 24, slug: "day-24-modules-commonjs-vs-esm", title: "Modules: CommonJS vs ESM", desc: "require vs import, live bindings vs value copies, circular dependency behavior." },
+          { n: 25, slug: "day-25-array-methods-performance", title: "Array Methods & Performance", desc: "V8 element kinds, dictionary-mode degradation, map/filter/reduce vs for-loop costs." },
+          { n: 26, slug: "day-26-destructuring-spread-rest-copying", title: "Destructuring, Spread/Rest & Copying", desc: "Shallow copy (spread, Object.assign) vs deep copy (structuredClone, recursive clone)." },
+          { n: 27, slug: "day-27-weakmap-weakset-memory-safe-caching", title: "WeakMap/WeakSet & Memory-Safe Caching", desc: "Weak references, GC-friendly caches, private instance data without leaks." },
+          { n: 28, slug: "day-28-functional-programming-patterns", title: "Functional Programming Patterns", desc: "Currying, composition, pure functions, immutability — used practically, not academically." },
+          { n: 29, slug: "day-29-design-patterns-in-js", title: "Design Patterns in JS", desc: "Module/IIFE, Singleton, Factory, Observer/Pub-Sub — and when each is over-engineering." },
+          { n: 30, slug: "day-30-capstone-system-design-performance", title: "Capstone: System Design & Performance", desc: "Profiling, tying memory + execution + event loop + prototypes into one mental model." },
+        ],
+      },
+    ];
+
+    const main = document.getElementById("main");
+
+    for (const week of WEEKS) {
+      const section = document.createElement("section");
+      section.className = "week";
+
+      const header = document.createElement("div");
+      header.className = "week-header";
+      header.innerHTML = `
+        <span class="week-badge">${week.badge}</span>
+        <span class="week-title">${week.title}</span>
+        <span class="week-sub">${week.sub}</span>
+      `;
+      section.appendChild(header);
+
+      const grid = document.createElement("div");
+      grid.className = "grid";
+
+      for (const day of week.days) {
+        const card = document.createElement("article");
+        card.className = "card";
+        const dayLabel = String(day.n).padStart(2, "0");
+        card.innerHTML = `
+          <div class="card-top">
+            <span class="day-num">DAY ${dayLabel}</span>
+            ${day.focus ? '<span class="focus-tag">FOCUS</span>' : ""}
+          </div>
+          <h3>${day.title}</h3>
+          <p>${day.desc}</p>
+          <div class="card-links">
+            <a class="readme" href="${day.slug}/guide.html">📖 Guide</a>
+            <a class="sandbox" href="${day.slug}/index.html">▶ Sandbox</a>
+          </div>
+        `;
+        grid.appendChild(card);
+      }
+
+      section.appendChild(grid);
+      main.appendChild(section);
+    }
+  </script>
+</body>
+</html>

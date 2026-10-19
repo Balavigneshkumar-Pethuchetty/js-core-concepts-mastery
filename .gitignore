@@ -1,0 +1,3 @@
+# Generated from day-XX/README.md by scripts/build-guides.js — not a source file.
+# Regenerate locally with: node scripts/build-guides.js
+day-*/guide.html
