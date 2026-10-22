@@ -175,7 +175,7 @@ function renderMarkdown(md) {
 // Page shell
 // ---------------------------------------------------------------------------
 
-function wrapPage({ title, bodyHtml }) {
+function wrapPage({ title, bodyHtml, extraLink }) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -251,6 +251,7 @@ function wrapPage({ title, bodyHtml }) {
   <div class="topbar">
     <a href="../index.html">&larr; All Days</a>
     <span class="spacer"></span>
+    ${extraLink || ''}
     <a href="index.html">&#9654; Open Sandbox</a>
     <button class="theme-toggle" id="themeToggle" title="Toggle light / dark theme" aria-label="Toggle light / dark theme">&#127769;</button>
   </div>
@@ -287,6 +288,9 @@ const dayDirs = fs
 let built = 0;
 for (const dir of dayDirs) {
   const readmePath = path.join(root, dir, 'README.md');
+  const practicePath = path.join(root, dir, 'PRACTICE.md');
+  const hasPractice = fs.existsSync(practicePath);
+
   if (!fs.existsSync(readmePath)) {
     console.warn(`skip ${dir}: no README.md found`);
     continue;
@@ -295,7 +299,25 @@ for (const dir of dayDirs) {
   const bodyHtml = renderMarkdown(md);
   const titleMatch = md.match(/^#\s+(.*)$/m);
   const title = titleMatch ? titleMatch[1].trim() : dir;
-  fs.writeFileSync(path.join(root, dir, 'guide.html'), wrapPage({ title, bodyHtml }), 'utf8');
+  const guideExtraLink = hasPractice ? '<a href="practice.html">&#128221; Practice Log</a>' : '';
+  fs.writeFileSync(
+    path.join(root, dir, 'guide.html'),
+    wrapPage({ title, bodyHtml, extraLink: guideExtraLink }),
+    'utf8'
+  );
   built++;
+
+  if (hasPractice) {
+    const practiceMd = fs.readFileSync(practicePath, 'utf8');
+    const practiceBodyHtml = renderMarkdown(practiceMd);
+    const practiceTitleMatch = practiceMd.match(/^#\s+(.*)$/m);
+    const practiceTitle = practiceTitleMatch ? practiceTitleMatch[1].trim() : `${dir} — Practice Log`;
+    fs.writeFileSync(
+      path.join(root, dir, 'practice.html'),
+      wrapPage({ title: practiceTitle, bodyHtml: practiceBodyHtml, extraLink: '<a href="guide.html">&#128214; Back to Guide</a>' }),
+      'utf8'
+    );
+    built++;
+  }
 }
-console.log(`Built ${built} guide.html page(s) from README.md files.`);
+console.log(`Built ${built} guide/practice page(s) from markdown files.`);

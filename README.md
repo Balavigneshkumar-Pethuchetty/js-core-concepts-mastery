@@ -11,10 +11,15 @@ Every day lives in its own folder with three files:
   Interview Talking Points (spoken from production experience, not textbook definitions)
   → Junior Mentorship Guide (2-minute explanation + common traps) → Hands-On Exercise.
 - **`script.js`** — heavily commented, fully runnable code: happy paths, pitfalls, edge
-  cases, and for the async days, line-by-line ordering traces.
-- **`index.html`** — a self-contained browser sandbox that runs `script.js` and mirrors
-  `console.log` output onto the page. Open it directly, or run `node script.js` from the
-  terminal.
+  cases, and for the async days, line-by-line ordering traces. This is the single source
+  of truth; `index.html` is generated from it (see Setup below).
+- **`index.html`** — a browser sandbox, broken into the same labeled sections as
+  `script.js` (Happy Path, Common Pitfall, Edge Case, …). Each section shows that block's
+  source code directly above the live output it produces, so you can correlate "this
+  code" with "this result" instead of reading a blind console dump — the code's own
+  inline comments are the explanation for why you got that result. Async callbacks are
+  correctly attributed back to the section that scheduled them even when they fire out of
+  order, which matters most for the Day 15–22 material.
 
 ## The 30 Days
 
@@ -70,21 +75,26 @@ Every day lives in its own folder with three files:
 
 ## Setup (one time, or after cloning/editing)
 
-Each day's `README.md` is the single source of truth and the only thing tracked in git.
-The styled `guide.html` pages are a **generated build artifact** (gitignored, not
-committed) produced by `scripts/build-guides.js` — a small, dependency-free markdown
-renderer. Generate them once before browsing:
+Each day's `README.md` and `script.js` are the single sources of truth — the only things
+tracked in git for that folder. `guide.html`, `practice.html` (where present), and
+`index.html` are all **generated build artifacts** (gitignored, not committed). Generate
+them once before browsing:
 
 ```
 node scripts/build-guides.js
+node scripts/build-sandbox-pages.js
 ```
 
-(Re-run it any time you edit a `README.md`, to keep its `guide.html` in sync.)
+- `build-guides.js` renders each `README.md` (and `PRACTICE.md`, if present) into a
+  styled `guide.html` / `practice.html`, via a small, dependency-free markdown renderer.
+- `build-sandbox-pages.js` parses each `script.js` into its labeled sections and
+  generates `index.html`, pairing each section's code with the live output it produces.
 
-It's a pre-render step rather than a live fetch-and-render because browsers block a
-`file://` page from `fetch()`-ing a sibling local file — so a single runtime markdown
-viewer can't read `README.md` directly when these pages are just double-clicked from
-Explorer, without running a local server.
+Re-run either script any time you edit the corresponding source file, to keep the
+generated page in sync. Both are pre-render steps rather than live fetch-and-render
+because browsers block a `file://` page from `fetch()`-ing a sibling local file — so a
+single runtime viewer can't read another file directly when these pages are just
+double-clicked from Explorer, without running a local server.
 
 ## How to use this
 

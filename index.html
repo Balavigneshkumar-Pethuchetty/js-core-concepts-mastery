@@ -224,6 +224,18 @@
       color: #fff;
     }
     .card-links a.sandbox:hover { background: var(--accent); border-color: var(--accent); }
+    .practice-link {
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      font-size: 0.78rem;
+      padding: 0.35rem 0.5rem;
+      border-radius: 6px;
+      border: 1px solid var(--focus-border);
+      color: var(--focus-text);
+      background: var(--focus-bg);
+    }
+    .practice-link:hover { border-color: var(--focus-text); }
 
     footer {
       max-width: 980px;
@@ -263,7 +275,7 @@
         title: "Execution Model & Scope",
         sub: "Days 01–05",
         days: [
-          { n: 1, slug: "day-01-execution-context-call-stack", title: "Execution Context & Call Stack", desc: "How V8 creates and pushes/pops execution contexts; stack frames; stack overflow." },
+          { n: 1, slug: "day-01-execution-context-call-stack", title: "Execution Context & Call Stack", desc: "How V8 creates and pushes/pops execution contexts; stack frames; stack overflow.", practice: true },
           { n: 2, slug: "day-02-hoisting-var-let-const-tdz", title: "Hoisting, var/let/const & the TDZ", desc: "Two-phase creation/execution, var vs let/const hoisting, the Temporal Dead Zone." },
           { n: 3, slug: "day-03-scope-lexical-environment", title: "Scope & the Lexical Environment", desc: "Lexical environment records, the scope chain, lexical vs dynamic scoping." },
           { n: 4, slug: "day-04-closures", title: "Closures", desc: "How closures keep variables alive; loop-capture bugs; memoization & private state." },
@@ -358,6 +370,7 @@
             <a class="readme" href="${day.slug}/guide.html">📖 Guide</a>
             <a class="sandbox" href="${day.slug}/index.html">▶ Sandbox</a>
           </div>
+          ${day.practice ? `<a class="practice-link" href="${day.slug}/practice.html">📝 Practice Log</a>` : ""}
         `;
         grid.appendChild(card);
       }
